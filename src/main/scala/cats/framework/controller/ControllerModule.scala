@@ -24,7 +24,7 @@ import scalafx.beans.property.ObjectProperty
 object ControllerModule:
 
   sealed trait Component extends ReadKeyboard
-    with CatsResource
+    with CatsResource with CatsBracket
 
   trait Interface extends Component with ModelModule.Interface with ViewModule.Interface:
 
