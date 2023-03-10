@@ -16,10 +16,10 @@ trait View:
 
   def createView(gs: ObjectProperty[GS]): Unit = new PrimaryStage {
       title = "ScalaFX App"
-      scene = newScene(gs)
+      scene = createScene(gs)
     }
 
-  def newScene(gs: ObjectProperty[GS]): Scene =
+  def createScene(gs: ObjectProperty[GS]): Scene =
     new Scene {
       root = new StackPane {
         content = gs.value.shapes

@@ -31,7 +31,7 @@ object ControllerModule:
 
     val gs: ObjectProperty[GS]
     def createView(): Unit = createView(gs)
-    def createScene(gs: ObjectProperty[GS]): Scene = newScene(gs)
+    def createScene(): Scene = createScene(gs)
 
     val loopSequence = Effects.loopSeq
     val loopParallel = Effects.loopPar
