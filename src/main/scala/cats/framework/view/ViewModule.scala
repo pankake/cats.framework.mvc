@@ -12,7 +12,7 @@ object ViewModule:
 
   sealed trait Component extends View:
     
-    val viewObj = View.apply()
+    val viewObj: Unit = View.apply()
 
     //aggiunge l'estensione trace al tipo IO per stampare il nome del thread in esecuzione
     extension[A] (io: IO[A])

@@ -22,7 +22,7 @@ trait View extends JFXApp3 with Controller:
     height = 635
 
     scene = new Scene {
-      title = "SNAKE | Highscore: " + gs.value.score
+      title = "SNAKE | Highscore: " + gs.value.value
 
       fill = Black //colore di background
       content = gs.value.shapes  //elementi della scena

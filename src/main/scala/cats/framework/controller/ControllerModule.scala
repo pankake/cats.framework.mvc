@@ -20,6 +20,7 @@ import scalafx.application.Platform
 import cats.framework.model.ModelModule
 import cats.framework.view.{View, ViewModule}
 import scalafx.beans.property.ObjectProperty
+import scalafx.scene.Scene
 
 object ControllerModule:
 
@@ -28,9 +29,10 @@ object ControllerModule:
 
   trait Interface extends Component with ModelModule.Interface with ViewModule.Interface:
 
-    val view = viewObj
     val gs: ObjectProperty[GS]
-    def showView(view: View) = view.createView(gs)
+    def createView(): Unit = createView(gs)
+    def createScene(gs: ObjectProperty[GS]): Scene = newScene(gs)
+
     val loopSequence = Effects.loopSeq
     val loopParallel = Effects.loopPar
     val effectsSequence = Effects.effectsSeq

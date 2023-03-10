@@ -6,7 +6,7 @@ import scalafx.scene.shape.{Rectangle, Shape}
 trait GS:
   def shapes: List[Shape]
   def newState(dir: Int): GS
-  val score: String
+  val value: String
 
 
 

@@ -26,7 +26,7 @@ trait Model extends ControllerModule.Interface:
 
   case class Food(value: (Double, Double))
   case class EvilFood(value: (Double, Double))
-  case class GameState(snake: Snake, food: Food, efoodRef: Ref[IO, List[EvilFood]], score: String, frame: IntegerProperty) extends GS:
+  case class GameState(snake: Snake, food: Food, efoodRef: Ref[IO, List[EvilFood]], value: String, frame: IntegerProperty) extends GS:
 
     def newState(dir: Int): GameState =
       def calcNewHead(snakeRef: Ref[IO, List[(Double, Double)]]): IO[(Double, Double)] =
@@ -44,7 +44,7 @@ trait Model extends ControllerModule.Interface:
           newSnake <- if (newx < 0 || newx >= 600 || newy < 0 || newy >= 600
             || refGet(snakeRef).unsafeRunSync().tail.contains(newx, newy) || efoodCollision(efoodRef, newx, newy))
             for {
-              initSnake <- IO(initialSnake) <& writeNewHighScore(score.toInt, refGet(snakeRef).unsafeRunSync().size - 3)
+              initSnake <- IO(initialSnake) <& writeNewHighScore(value.toInt, refGet(snakeRef).unsafeRunSync().size - 3)
             } yield (initSnake.list)
           else if (food.value == (newx, newy))
             for {
@@ -88,7 +88,7 @@ trait Model extends ControllerModule.Interface:
       val (nSnake, nFood) = snakeLogic.unsafeRunSync()
 
       //ritorna un nuovo stato
-      GameState(nSnake, nFood, efoodRef, score, frame)
+      GameState(nSnake, nFood, efoodRef, value, frame)
 
     //lista di rettangoli da disegnare
     def shapes: List[Rectangle] = square(food.value._1, food.value._2, Red)

@@ -10,21 +10,27 @@ import scalafx.beans.property.ObjectProperty
 import scalafx.scene.Scene
 import scalafx.scene.layout.StackPane
 import scalafx.scene.paint.Color
-import scalafx.scene.shape.Rectangle
+import scalafx.scene.shape.{Rectangle, Shape}
 
 trait View:
 
-  def createView(gs: ObjectProperty[GS]): Unit =
-    val stage = new PrimaryStage {
+  def createView(gs: ObjectProperty[GS]): Unit = new PrimaryStage {
       title = "ScalaFX App"
-      scene = new Scene {
-        root = new StackPane {
-          content = gs.value.shapes
-        }
+      scene = newScene(gs)
+    }
+
+  def newScene(gs: ObjectProperty[GS]): Scene =
+    new Scene {
+      root = new StackPane {
+        content = gs.value.shapes
+
+        gs.onChange(Platform.runLater {
+          content = gs.value.shapes //aggiorna il content della scena ad ogni cambiamento di stato
+        })
       }
     }
 
-private object View:
+object View:
   def apply(): Unit =
     JFXAppImpl()
   private class JFXAppImpl extends View
