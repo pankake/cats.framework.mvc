@@ -59,13 +59,13 @@ trait Controller extends Model:
       val program: IO[Unit] =
         for {
           ret <- checkState(stateR)
-          _ <- if (ret) updateState
+          _ <- if (ret) updateState(gs, direction.value)
             else IO.unit
         } yield ()
       program.unsafeRunSync()
     }
 
-  private def updateState = IO(gs.update(gs.value.newState(direction.value)))
+  //override def updateState(gs: ObjectProperty[GS], v: Any) = IO(gs.update(gs.value.newState(v)))
 
   private def checkState[F[_] : Sync : Console](stateR: Ref[F, State[F, Int]]): F[Boolean] =
     stateR.modify {

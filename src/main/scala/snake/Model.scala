@@ -28,7 +28,7 @@ trait Model extends ControllerModule.Interface:
   case class EvilFood(value: (Double, Double))
   case class GameState(snake: Snake, food: Food, efoodRef: Ref[IO, List[EvilFood]], value: String, frame: IntegerProperty) extends GS:
 
-    def newState(dir: Int): GameState =
+    def newState(dir: Any): GameState =
       def calcNewHead(snakeRef: Ref[IO, List[(Double, Double)]]): IO[(Double, Double)] =
         for {
           snake <- refGet(snakeRef)
@@ -109,7 +109,7 @@ trait Model extends ControllerModule.Interface:
       height = 25
       fill = color
 
-  def compDirection(dir: Int, x: Double, y: Double): IO[(Double, Double)] = IO(
+  def compDirection(dir: Any, x: Double, y: Double): IO[(Double, Double)] = IO(
     dir match {
       case 1 => (x, y - 25)
       case 2 => (x, y + 25)

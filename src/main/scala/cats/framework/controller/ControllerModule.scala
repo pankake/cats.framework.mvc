@@ -30,6 +30,7 @@ object ControllerModule:
   trait Interface extends Component with ModelModule.Interface with ViewModule.Interface:
 
     val gs: ObjectProperty[GS]
+    def updateState(gs: ObjectProperty[GS], ns: Any): IO[Unit] = IO(gs.update(gs.value.newState(ns)))
     def createView(): Unit = createView(gs)
     def createScene(): Scene = createScene(gs)
 
