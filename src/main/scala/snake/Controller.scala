@@ -65,8 +65,6 @@ trait Controller extends Model:
       program.unsafeRunSync()
     }
 
-  //override def updateState(gs: ObjectProperty[GS], v: Any) = IO(gs.update(gs.value.newState(v)))
-
   private def checkState[F[_] : Sync : Console](stateR: Ref[F, State[F, Int]]): F[Boolean] =
     stateR.modify {
       case State(queue, deferredQ)
