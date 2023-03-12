@@ -32,5 +32,5 @@ trait View:
 
 object View:
   def apply(): Unit =
-    JFXAppImpl()
-  private class JFXAppImpl extends View
+    ViewImpl()
+  private class ViewImpl extends View

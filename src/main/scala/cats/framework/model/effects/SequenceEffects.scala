@@ -4,7 +4,7 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import cats.framework.model.effects.AbsEffects
 
-class SequenceEffects extends AbsEffects:
+private class SequenceEffects extends AbsEffects:
 
   type T = Any
 
