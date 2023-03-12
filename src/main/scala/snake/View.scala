@@ -17,19 +17,24 @@ import cats.framework.controller.GS
 
 trait View extends JFXApp3 with Controller:
 
+  //ridefinisce il metodo per la creazione della view
   override def createView(gs: ObjectProperty[GS]) = new JFXApp3.PrimaryStage {
     width = 600
     height = 635
 
+    //crea una scena
     scene = new Scene {
+
+      //titolo tel gioco e punteggio massimo raggiunto
       title = "SNAKE | Highscore: " + gs.value.value
 
       fill = Black //colore di background
       content = gs.value.shapes  //elementi della scena
       onKeyPressed = key => readKeys(key) //listener per i comandi
 
+      //aggiorna il content della scena ad ogni cambiamento di stato
       gs.onChange(Platform.runLater {
-        content = gs.value.shapes //aggiorna il content della scena ad ogni cambiamento di stato
+        content = gs.value.shapes
       })
     }
   }

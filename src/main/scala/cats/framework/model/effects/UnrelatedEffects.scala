@@ -21,6 +21,7 @@ private sealed trait ExpirationEffect extends UnrelatedEffects:
   type Behaviour = (Effect, Int, Effect)
   type ReturnValue = Unit
 
+  //esegue fino allo scadere del tempo poi esegue un finalizzatore fallback
   def execute(b: Behaviour): ReturnValue =
     val io: Effect = b._1
     val duration: Int = b._2
@@ -79,12 +80,14 @@ private sealed trait UncancellableEffects extends UnrelatedEffects:
   type Behaviour = (Effect, Effect)
   type ReturnValue = Unit
 
+  //esegue due IO uno cancellabile e uno non cancellabile
   def execute(b: Behaviour): ReturnValue =
     val cancellableIO: Effect = b._1
     val uncancellableIO: Effect = b._2
 
     IO.uncancelable(unmask => unmask(cancellableIO) >> uncancellableIO)
 
+  //esegue un IO cancellabile e uno non cancellabile in parallelo in maniera lazy
   def execUncancellableLazyParIO(b: Behaviour): ReturnValue =
     val cancellableIO: Effect = b._1
     val uncancellableIO: Effect = b._2
@@ -103,8 +106,10 @@ private sealed trait BlockingEffects extends UnrelatedEffects:
   type Behaviour = Effect
   type ReturnValue = Unit
 
+  //valore per la gestione del threadpool
   val customThreadPool = scala.concurrent.ExecutionContext.global
 
+  //esegue un IO di tipo bloccante
   def execute(b: Behaviour): ReturnValue =
     val io: Effect = b
 
@@ -125,6 +130,8 @@ private sealed trait RetryEffects extends UnrelatedEffects:
   type Behaviour = (Effect, Int, FiniteDuration)
   type ReturnValue = Unit
 
+  //esegue un ciclo di retry per gli IO che vanno in errore
+  //vengono impostati un delay e un numero di tentativi
   def retryLoop(io: Effect, times: Int, sleep: FiniteDuration): Effect =
     io.handleErrorWith { case ex =>
       if (times != 0)
@@ -134,6 +141,7 @@ private sealed trait RetryEffects extends UnrelatedEffects:
         IO.println("Exhausted all the retry attempts") >> IO.raiseError(ex)
     }
 
+  //esegue il ciclo di retry
   def execute(b: Behaviour): ReturnValue =
     val io: Effect = b._1
     val times: Int = b._2
@@ -153,6 +161,7 @@ private sealed trait RaceEffects extends UnrelatedEffects:
   type Behaviour = (Effect, Effect)
   type ReturnValue = Any
 
+  //esegue due effetti con race, ignora il risultato della fibra più lenta
   def execute(b: Behaviour): ReturnValue =
     val io1: Effect = b._1
     val io2: Effect = b._2
@@ -164,6 +173,8 @@ private sealed trait RaceEffects extends UnrelatedEffects:
     }
   }
 
+  //esegue due IO con racePair, restituisce il risultato della fibra più veloce e l'handler
+  //della fibra più lenta
   def execRacePair(b: Behaviour): ReturnValue =
     val io1: Effect = b._1
     val io2: Effect = b._2

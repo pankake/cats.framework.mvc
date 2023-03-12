@@ -14,11 +14,13 @@ import scalafx.scene.shape.{Rectangle, Shape}
 
 trait View:
 
+  //crea una view
   def createView(gs: ObjectProperty[GS]): Unit = new PrimaryStage {
       title = "ScalaFX App"
       scene = createScene(gs)
     }
 
+  //crea una scena
   def createScene(gs: ObjectProperty[GS]): Scene =
     new Scene {
       root = new StackPane {

@@ -11,7 +11,8 @@ import cats.Applicative.ops.toAllApplicativeOps
 object ViewModule:
 
   sealed trait Component extends View:
-    
+
+    //istanza della view
     val viewObj: Unit = View.apply()
 
     //aggiunge l'estensione trace al tipo IO per stampare il nome del thread in esecuzione

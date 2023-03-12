@@ -12,6 +12,7 @@ object ModelModule:
   sealed trait Component extends SharedState with ErrorHandling
     with AtomicRef with ParTupledEffects:
 
+    //istanze delle classi e tratti che gestiscono gli effetti
     protected[framework] object Effects:
       def loopSeq = LoopEffects.apply()
       def loopPar = LoopParEffects.apply()

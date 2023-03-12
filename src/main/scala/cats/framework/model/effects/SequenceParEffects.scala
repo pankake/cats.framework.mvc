@@ -10,9 +10,11 @@ private class SequenceParEffects extends AbsEffects:
 
   type T = Any
 
+  //esegue una sequenza di effetti in parallelo
   def runEffectsSequence(effectsList: Seq[IO[Any]]) =
     effectsList.parSequence.unsafeRunSync()
 
+  //esegue una sequenza di effetti in parallelo ed applica una funzione f ad ognuno di essi
   def runEffectsTraverse(effectsList: Seq[IO[Any]])(f: T => Unit) =
     effectsList.parTraverse(io => io.map(f)).unsafeRunSync()
 

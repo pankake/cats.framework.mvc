@@ -22,19 +22,26 @@ object SnakeFx extends View:
 
   override def start(): Unit =
 
+    //riferimento al programma
     val game: IO[Unit] =
       for {
+        //crea la view
         _ <- IO.pure(createView(gs))
+        //crea un oggetto condiviso composto da due code, viene usato per gestire la pausa
         sState <- Ref.of[IO, State[IO, Int]](State.empty[IO, Int])
+        //metodo per la gestione della pausa
         _ <- IO(handlePause(sState).unsafeRunAsync(_ => ()))
+        //loop che esegue l'aggiornamento dei frame
         _ <- IO(loopSequence.loopEffectsSeq(List(IO(effectsAsync.runAsyncSequence((), List(IO(frame.update(frame.value + 1))))
         (70))))(refCreate(false).unsafeRunSync()))
+        //chiama frameUpdate che genera un listener sullo stato dell'applicazione
         _ <- IO(effectsAsync.runAsyncSequence((), List(IO(frameUpdate(sState))))(0))
           .handleErrorWith { t =>
             failedIO(t).as(ExitCode.Error)
           }
       } yield ()
 
+    //mette in esecuzione l'applicazione
     game.unsafeRunSync()
 
 

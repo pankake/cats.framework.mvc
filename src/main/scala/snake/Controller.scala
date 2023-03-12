@@ -26,6 +26,7 @@ import snake.configurations.cfg
 
 trait Controller extends Model:
 
+  //lettura dei tasti premuti
   override def readKeys(keyEvent: KeyEvent): Unit =
     keyEvent.getText match {
       case "w" | "W" => if(direction.value != 2) direction.value = 1
@@ -35,6 +36,7 @@ trait Controller extends Model:
       case _ => IO.unit
     }
 
+  //gestione della pausa
   def handlePause(sState: Ref[IO, State[IO, Int]]): IO[Unit] =
     for {
       _ <- modifyState(sState)
@@ -46,6 +48,7 @@ trait Controller extends Model:
   //proprietà usata per la direzione inserita attraverso i comandi
   val direction = IntegerProperty(4) // 4 = right
 
+  //conteggio dei frame
   val frame = IntegerProperty(0)
 
   //proprietà che descrive lo stato corrente del gioco
@@ -65,6 +68,8 @@ trait Controller extends Model:
       program.unsafeRunSync()
     }
 
+  //controlla una delle code dell'oggetto condiviso
+  //ritorna: coda vuota -> true, coda non vuota -> false
   private def checkState[F[_] : Sync : Console](stateR: Ref[F, State[F, Int]]): F[Boolean] =
     stateR.modify {
       case State(queue, deferredQ)
@@ -74,11 +79,13 @@ trait Controller extends Model:
         State(queue, deferredQ) -> true
     }
 
+  //legge le stringhe lette dalla console
   def readKey[F[_] : Sync : Console]: F[Char] =
     for {
       n <- readLine
     } yield if(n.nonEmpty)n.last else 'x'
 
+  //modifica una delle code presenti nell'oggetto state condiviso
   override def modifyState[F[_] : Sync : Console](sState: Ref[F, State[F, Int]]): F[Boolean] =
     def edit: F[Unit] =
       sState.modify {
@@ -95,7 +102,7 @@ trait Controller extends Model:
       }
 
     for {
-      ch <- readKey //sistemare stringa vuota
+      ch <- readKey
       _ <- ch match {
         case 'p' | 'P' => edit
         case _ => Sync[F].unit

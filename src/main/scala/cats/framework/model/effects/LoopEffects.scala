@@ -13,6 +13,7 @@ import scala.concurrent.duration.*
 
 private trait LoopEffects extends AbsEffects with AtomicRef:
 
+  //cicla gli effetti fino a quando la condizione non è soddisfatta
   def loopEffects(effects: => Any*)(termination: Ref[IO, Boolean]): Unit =
     refGet(termination).unsafeRunSync() match {
       case false =>
@@ -22,6 +23,7 @@ private trait LoopEffects extends AbsEffects with AtomicRef:
       case true => IO.unit
     }
 
+  //cicla una sequenza di effetti fino a quando la condizione non è soddisfatta
   def loopEffectsSeq(effectsList: Seq[IO[Any]])(termination: Ref[IO, Boolean]): Unit =
     refGet(termination).unsafeRunSync() match {
       case false =>
@@ -32,7 +34,8 @@ private trait LoopEffects extends AbsEffects with AtomicRef:
       case true => IO.unit
     }
 
-  //esegue la lista di IO in sequenza e applica su ognuno di essi la funzione f
+  //cicla una sequenza di effetti fino a quando la condizione non è soddisfatta
+  //applica una funzione f su ogni effetto
   def loopEffectsTraverse(effectsList: Seq[IO[Any]], f: Any => Unit)(termination: Ref[IO, Boolean]): Unit =
     refGet(termination).unsafeRunSync() match {
       case false =>

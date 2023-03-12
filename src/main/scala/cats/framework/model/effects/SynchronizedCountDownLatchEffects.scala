@@ -14,17 +14,23 @@ trait SynchronizedCountDownLatchEffects extends SynchronizedEffects:
   type aFiber = (Effect, Approvals)
   type Approvals = Int
 
+  //esegue un effetto di tipo IO poi si mette in attesa
+  //al risveglio esegue un secondo effetto di tipo IO
   def waitingFiber(wFiber: wFiber, syncTool: SyncTool) = for {
     _ <- wFiber._1
     _ <- syncTool.await
     _ <- wFiber._2
   } yield ()
 
+  //esegue un effetto di tipo IO e sveglia la fibra in attesa
   def awakeningFiber(aFiber: aFiber, syncTool: SyncTool) = for {
     _ <- aFiber._1
     _ <- syncTool.release
   } yield ()
 
+  //inizializza il CountDownLatch con il numero di fibre che sono attese
+  //genera una fibra di tipo waitingFiber che si mette in attesa sullo strumento di sincro.
+  //genera il numero di fibre di tipo awakeningFiber richiesto per poter risvegliare la fibra in attesa
   def performSynchronizedEffects(wFiber: wFiber, aFiber: aFiber) = for {
     approvals <- CountDownLatch[IO](aFiber._2)
     fib <- waitingFiber(wFiber, approvals).start

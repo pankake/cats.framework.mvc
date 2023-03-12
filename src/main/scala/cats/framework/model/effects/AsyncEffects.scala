@@ -8,6 +8,7 @@ import java.util.concurrent.{Executors, TimeUnit}
 
 private trait AsyncEffects extends AbsEffects:
 
+  //esegue degli effetti in modo asincrono
   def runAsync(right: => Any, effects: => Any*)(delay: Int): Any =
     IO.async_[Unit] { cb =>
       scheduler.schedule(new Runnable {
@@ -16,6 +17,7 @@ private trait AsyncEffects extends AbsEffects:
       effects
     }.handleError(error => error.getMessage).unsafeRunSync()
 
+  //esegue una sequenza di effetti di tipo IO in modo asincrono
   def runAsyncSequence(right: => Any, effectsList: Seq[IO[Any]])(delay: Int): Any =
     IO.async_[Unit] { cb =>
       scheduler.schedule(new Runnable {
@@ -24,6 +26,7 @@ private trait AsyncEffects extends AbsEffects:
       runEffectsSequence(effectsList)
     }.handleError(error => error.getMessage).unsafeRunSync()
 
+  //esegue una sequenza di effetti di tipo IO in modo asincrono applicando su ogni effetto una f
   def runAsyncTraverse(right: => Any, effectsList: Seq[IO[Any]], f: Any => Unit)(delay: Int): Any =
     IO.async_[Unit] { cb =>
       scheduler.schedule(new Runnable {

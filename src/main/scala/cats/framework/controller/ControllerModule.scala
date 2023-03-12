@@ -29,11 +29,16 @@ object ControllerModule:
 
   trait Interface extends Component with ModelModule.Interface with ViewModule.Interface:
 
+    //stato per la view da renderizzare
     val gs: ObjectProperty[GS]
+    //aggiornamento dello stato
     def updateState(gs: ObjectProperty[GS], ns: Any): IO[Unit] = IO(gs.update(gs.value.newState(ns)))
+    //creazione della view
     def createView(): Unit = createView(gs)
+    //creazione della scena
     def createScene(): Scene = createScene(gs)
 
+    //istanze per la gestione degli effetti
     val loopSequence = Effects.loopSeq
     val loopParallel = Effects.loopPar
     val effectsSequence = Effects.effectsSeq
